@@ -548,7 +548,7 @@ extract_mime(int depth, struct message *msg, char *body, size_t bodylen)
 					printf("%s\n", bufptr);
 					writefile(bufptr, body, bodylen);
 				}
-				extractcount++;
+				if (errno == 0) extractcount++;
 			} else if (filename &&
 			    fnmatch(a, filename, FNM_PATHNAME) == 0) {
 				// extract by name
@@ -569,7 +569,7 @@ extract_mime(int depth, struct message *msg, char *body, size_t bodylen)
 					printf("\n");
 					writefile(filename, body, bodylen);
 				}
-				extractcount++;
+				if (errno == 0) extractcount++;
 			}
 		}
 	}
@@ -872,6 +872,7 @@ main(int argc, char *argv[])
 	if (pid1 > 0)
 		pipeclose(pid1);
 
+	printf("debug: %d %d\n", extractcount, argc-optind);
 	if ((xflag || Oflag) && extractcount < argc-optind) {
 		fprintf(stderr, "mshow: could not extract all attachments\n");
 		return 1;
